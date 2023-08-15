@@ -87,6 +87,24 @@ describe('/api/articles', () => {
       .get('/api/articles')
       .expect(200)
       .then((response) => {
+        expect(response.body.articles[1]).toEqual( 
+          {
+            article_id: 6,
+            title: 'A',
+            topic: 'mitch',
+            author: 'icellusedkars',
+            created_at: "2020-10-18T01:00:00.000Z",
+            votes: 0,
+            comment_count: '1'
+          }
+        );
+      });
+  })
+  test('GET:200 the articles should be sorted by date in descending order', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then((response) => {
         expect(response.body.articles[0]).toEqual( 
           {
             article_id: 3,
@@ -99,7 +117,7 @@ describe('/api/articles', () => {
           }
         );
       });
-  })
+    });
 });
 
 
