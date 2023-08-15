@@ -87,38 +87,30 @@ describe('/api/articles', () => {
       .get('/api/articles')
       .expect(200)
       .then((response) => {
-        expect(response.body.articles[1]).toEqual( 
-          {
-            article_id: 6,
-            title: 'A',
-            topic: 'mitch',
-            author: 'icellusedkars',
-            created_at: "2020-10-18T01:00:00.000Z",
-            votes: 0,
-            comment_count: '1'
-          }
-        );
+        const { articles } = response.body;
+        articles.forEach((article) => {
+          expect(article).toHaveProperty('article_id', expect.any(Number));
+          expect(article).toHaveProperty('title', expect.any(String));
+          expect(article).toHaveProperty('topic', expect.any(String));
+          expect(article).toHaveProperty('author', expect.any(String));
+          expect(article).toHaveProperty('created_at', expect.any(String));
+          expect(article).toHaveProperty('votes', expect.any(Number));
+          expect(article).toHaveProperty('article_img_url', expect.any(String));
+          expect(article).toHaveProperty('comment_count', expect.any(String));
+
+        })
       });
   })
-  test('GET:200 the articles should be sorted by date in descending order', () => {
+  test('GET:200 the articles should be returned in descending order of created_at ', () => {
     return request(app)
       .get('/api/articles')
       .expect(200)
       .then((response) => {
-        expect(response.body.articles[0]).toEqual( 
-          {
-            article_id: 3,
-            title: 'Eight pug gifs that remind me of mitch',
-            topic: 'mitch',
-            author: 'icellusedkars',
-            created_at: "2020-11-03T09:12:00.000Z",
-            votes: 0,
-            comment_count: '2'
-          }
-        );
+        expect(response.body.articles).toBeSortedBy("created_at", { descending: true });
       });
     });
 });
+
 
 
 
