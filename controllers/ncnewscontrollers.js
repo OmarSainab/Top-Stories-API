@@ -1,4 +1,5 @@
-const { selectTopics, selectEndPoints } = require("../models/ncnewsmodels");
+const { selectTopics, selectArticleById } = require("../models/ncnewsmodels");
+const endPoints = require("../endpoints.json")
 
 exports.getTopics = (request, response, next) => {
   selectTopics()
@@ -11,63 +12,16 @@ exports.getTopics = (request, response, next) => {
 };
 
 exports.getEndpoints = (request, response, next) => {
-    let endPoints = {
-        "GET /api": {
-          "description": "serves up a json representation of all the available endpoints of the api"
-        },
-        "GET /api/topics": {
-          "description": "serves an array of all topics",
-          "queries": [],
-          "exampleResponse": {
-            "topics": [{ "slug": "football", "description": "Footie!" }]
-          }
-        },
-        "GET /api/articles": {
-          "description": "serves an array of all articles",
-          "queries": ["author", "topic", "sort_by", "order"],
-          "exampleResponse": {
-            "articles": [
-              {
-                "title": "Seafood substitutions are increasing",
-                "topic": "cooking",
-                "author": "weegembump",
-                "body": "Text from the article..",
-                "created_at": "2018-05-30T15:59:13.341Z",
-                "votes": 0,
-                "comment_count": 6
-              }
-            ]
-          }
-        },
-        "GET /api/comments": {
-          "description": "serves an array of all comments",
-          "queries": ["comments", "votes", "sort_by", "order"],
-          "exampleResponse": {
-            "comments": [
-              {
-                "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-                "votes": 16,
-                "author": "butter_bridge",
-                "article_id": 9,
-                "created_at": 1586179020000
-              }
-            ]
-          }
-        },
-        "GET /api/users": {
-          "description": "serves an array of all users",
-          "queries": ["username", "name"],
-          "exampleResponse": {
-            "users": [
-              {
-                "username": "butter_bridge",
-                "name": "jonny",
-                "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
-              }
-            ]
-          }
-        }
-      }
       response.status(200).send( endPoints );
 
+};
+
+exports.getArticlesById = (request, response, next) => {
+  const  article_id  = request.params.article_id;
+  selectArticleById(article_id).then((article) => {
+    response.status(200).send({ article });
+  })
+  .catch((error) => {
+    next(error);
+  })
 };
