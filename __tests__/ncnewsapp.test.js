@@ -3,6 +3,7 @@ const request = require('supertest');
 const db = require('../db/connection');
 const seed = require('../db/seeds/seed')
 const {articleData, commentData, topicData, userData} = require('../db/data/test-data')
+const endPoints = require("../endpoints.json")
 
 beforeEach(() => seed({ articleData, commentData, topicData, userData }));
 afterAll(() => db.end());
@@ -26,65 +27,59 @@ describe('/api', () => {
         .get('/api')
         .expect(200)
         .then((response) => {
-          expect(response.body).toEqual({
-            "GET /api": {
-              "description": "serves up a json representation of all the available endpoints of the api"
-            },
-            "GET /api/topics": {
-              "description": "serves an array of all topics",
-              "queries": [],
-              "exampleResponse": {
-                "topics": [{ "slug": "football", "description": "Footie!" }]
-              }
-            },
-            "GET /api/articles": {
-              "description": "serves an array of all articles",
-              "queries": ["author", "topic", "sort_by", "order"],
-              "exampleResponse": {
-                "articles": [
-                  {
-                    "title": "Seafood substitutions are increasing",
-                    "topic": "cooking",
-                    "author": "weegembump",
-                    "body": "Text from the article..",
-                    "created_at": "2018-05-30T15:59:13.341Z",
-                    "votes": 0,
-                    "comment_count": 6
-                  }
-                ]
-              }
-            },
-            "GET /api/comments": {
-              "description": "serves an array of all comments",
-              "queries": ["comments", "votes", "sort_by", "order"],
-              "exampleResponse": {
-                "comments": [
-                  {
-                    "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-                    "votes": 16,
-                    "author": "butter_bridge",
-                    "article_id": 9,
-                    "created_at": 1586179020000
-                  }
-                ]
-              }
-            },
-            "GET /api/users": {
-              "description": "serves an array of all users",
-              "queries": ["username", "name"],
-              "exampleResponse": {
-                "users": [
-                  {
-                    "username": "butter_bridge",
-                    "name": "jonny",
-                    "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
-                  }
-                ]
-              }
-            }
-          }
-          
+          expect(response.body).toEqual( endPoints
           );
         });
     })
 });
+describe('ALL /notapath', () => {
+  test('404: should respond with a custom 404 message when the path is not found', () => {
+    return request(app)
+      .get('/api/banana')
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe( 'Not Found'
+        );
+      });
+  })
+});
+describe('/api/articles/:article_id', () => {
+  test('GET:200 sends a single article to the client', () => {
+    return request(app)
+      .get('/api/articles/1')
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article).toMatchObject([{
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 100,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          }]);
+      });
+  });
+  test('GET:404 sends an appropriate error message when given a valid but non-existent id', () => {
+    return request(app)
+      .get('/api/articles/999')
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toBe('article does not exist');
+      });
+  });
+  test('GET:400 sends an appropriate error message when given an invalid id', () => {
+    return request(app)
+      .get('/api/articles/not-an-article')
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe('Invalid id');
+      });
+  });
+});
+
+
+
