@@ -21,41 +21,35 @@ exports.selectArticleById = (article_id) => {
 
   exports.selectAllArticles = () => {
     const selectArticlesQuery = format(
-      `SELECT
+      `SELECT 
       articles.article_id,
       articles.title,
       articles.topic,
       articles.author,
       articles.created_at,
       articles.votes,
+      articles.article_img_url,
       COUNT(comments.comment_id) AS comment_count
-    FROM articles
-    LEFT JOIN comments ON articles.article_id = comments.article_id
-    GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC;
+      FROM articles
+      JOIN comments ON articles.article_id = comments.article_id
+      GROUP BY articles.article_id
+      ORDER BY created_at DESC;
     `,
     );
-    return db.query(selectArticlesQuery).then((result) => {
-    
+    return db.query(selectArticlesQuery).then((result) => { 
     return(result.rows)
    });
   };
 
-  exports.selectAllComments = () => {
+  exports.selectAllComments = (article_id) => {
     const selectCommentsQuery = format(
-      `SELECT
-      comments.comment_id,
-      comments.body,
-      comments.article_id,
-      comments.author,
-      comments.created_at,
-      comments.votes
-    FROM comments
-    ORDER BY comments.created_at DESC;
-    `,
+      `SELECT * FROM comments WHERE article_id = %L
+      ORDER BY created_at`, article_id
     );
     return db.query(selectCommentsQuery).then((result) => {
-    return(result.rows)
-   });
+      return result.rows;
+    });
   };
+  
+
 

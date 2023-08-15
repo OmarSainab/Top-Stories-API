@@ -39,8 +39,8 @@ exports.getAllArticles = (request, response, next) => {
 };
 
 exports.getAllComments = (request, response, next) => {
-
-  selectAllComments()
+  const article_id = request.params.article_id;
+  selectAllComments(article_id)
   .then((comments) => {
     response.status(200).send({  comments });
   })
