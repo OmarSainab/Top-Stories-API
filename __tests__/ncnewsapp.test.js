@@ -82,7 +82,25 @@ describe('/api/articles/:article_id', () => {
 });
 
 describe('/api/articles', () => {
-  test('GET:200 Responds with an articles array of article objects, each of which with specific properties: ', () => {
+  test('GET:200 Responds with an articles array of article objects, each of which with specific properties ', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles[1]).toEqual( 
+          {
+            article_id: 6,
+            title: 'A',
+            topic: 'mitch',
+            author: 'icellusedkars',
+            created_at: "2020-10-18T01:00:00.000Z",
+            votes: 0,
+            comment_count: '1'
+          }
+        );
+      }); 
+  });
+  test('GET:200 the articles should be sorted by date in descending order', () => {
     return request(app)
       .get('/api/articles')
       .expect(200)
@@ -99,8 +117,42 @@ describe('/api/articles', () => {
           }
         );
       });
+    });
+
+});
+describe('/api/articles/:article_id/comments', () => {
+  test('200: Responds with an array of comments for the given article_id of which each comment should have the specified properties', () => {
+    return request(app)
+      .get('/api/articles/:article_id/comments')
+      .expect(200)
+      .then((response) => {
+        expect(response.body.comments[1]).toEqual({
+          comment_id: 5,
+          body: 'I hate streaming noses',
+          article_id: 1,
+          author: 'icellusedkars',
+          created_at: "2020-11-03T21:00:00.000Z",
+          votes: 0
+        }
+        );
+      });
+  })
+  test('200: Comments should be served with the most recent comments first.', () => {
+    return request(app)
+      .get('/api/articles/:article_id/comments')
+      .expect(200)
+      .then((response) => {
+        expect(response.body.comments[0]).toEqual({
+          comment_id: 15,
+          body: "I am 100% sure that we're not completely sure.",
+          article_id: 5,
+          author: 'butter_bridge',
+          created_at: "2020-11-24T00:08:00.000Z",
+          votes: 1
+        }
+        );
+      });
   })
 });
-
 
 

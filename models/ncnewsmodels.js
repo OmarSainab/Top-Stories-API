@@ -36,6 +36,25 @@ exports.selectArticleById = (article_id) => {
     `,
     );
     return db.query(selectArticlesQuery).then((result) => {
+    
+    return(result.rows)
+   });
+  };
+
+  exports.selectAllComments = () => {
+    const selectCommentsQuery = format(
+      `SELECT
+      comments.comment_id,
+      comments.body,
+      comments.article_id,
+      comments.author,
+      comments.created_at,
+      comments.votes
+    FROM comments
+    ORDER BY comments.created_at DESC;
+    `,
+    );
+    return db.query(selectCommentsQuery).then((result) => {
     return(result.rows)
    });
   };
