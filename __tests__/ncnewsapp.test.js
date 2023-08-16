@@ -76,7 +76,7 @@ describe('/api/articles/:article_id', () => {
       .get('/api/articles/not-an-article')
       .expect(400)
       .then((response) => {
-        expect(response.body.message).toBe('Invalid id');
+        expect(response.body.message).toBe('Bad request');
       });
   });
 });
@@ -110,7 +110,7 @@ describe('/api/articles', () => {
       });
     });
 });
-describe('/api/articles/:article_id/comments', () => {
+describe('GET /api/articles/:article_id/comments', () => {
   test('200: Responds with an array of comments for the given article_id of which each comment should have the specified properties', () => {
     return request(app)
       .get('/api/articles/1/comments')
@@ -151,10 +151,12 @@ test('200: Comments should be served with the most recent comments first. ', () 
       .get('/api/articles/banana/comments')
       .expect(400)
       .then((response) => {
-        expect(response.body.message).toBe('Invalid id');
+        expect(response.body.message).toBe("Bad request");
       });
   });
-  test.only('POST:201 inserts a new comment to the db and sends the new comment back to the client', () => {
+});
+  describe('POST /api/articles/:article_id/comments', () => {
+  test('POST:201 inserts a new comment to the db and sends the new comment back to the client', () => {
     const newComment = {
       username: 'butter_bridge',
       body: 'This is amazing'
@@ -172,6 +174,17 @@ test('200: Comments should be served with the most recent comments first. ', () 
           votes: 0,
           created_at: expect.any(String)
         } );
+      });
+  });
+  test('POST:400 responds with an appropriate error message when provided with a bad username (no name)', () => {
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send({
+        body: 'This is amazing'
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe('Bad request');
       });
   });
 });

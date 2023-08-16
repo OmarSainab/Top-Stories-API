@@ -30,8 +30,8 @@ app.use((request, response) => {
 app.use((error, request, response, next) => {
   if (error.message && error.status) {
     response.status(error.status).send({ message: error.message });
-  } else if (error.code === "22P02") {
-    response.status(400).send({ message: "Invalid id" });
+  } else if (error.code === "22P02" || error.code === "23502") {
+    response.status(400).send({ message: "Bad request" });
   } else {
     next(error);
   }
