@@ -154,4 +154,26 @@ test('200: Comments should be served with the most recent comments first. ', () 
         expect(response.body.message).toBe('Invalid id');
       });
   });
+  test.only('POST:201 inserts a new comment to the db and sends the new comment back to the client', () => {
+    const newComment = {
+      username: 'butter_bridge',
+      body: 'This is amazing'
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        expect(response.body.comment).toEqual(   {
+          comment_id: 19,
+          body: 'This is amazing',
+          article_id: 1,
+          author: 'butter_bridge',
+          votes: 0,
+          created_at: expect.any(String)
+        } );
+      });
+  });
 });
+
+
