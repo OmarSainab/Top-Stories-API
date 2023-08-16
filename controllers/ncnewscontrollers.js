@@ -1,4 +1,4 @@
-const { selectTopics, selectArticleById } = require("../models/ncnewsmodels");
+const { selectTopics, selectArticleById, selectAllArticles } = require("../models/ncnewsmodels");
 const endPoints = require("../endpoints.json")
 
 exports.getTopics = (request, response, next) => {
@@ -25,3 +25,15 @@ exports.getArticlesById = (request, response, next) => {
     next(error);
   })
 };
+
+exports.getAllArticles = (request, response, next) => {
+
+  selectAllArticles()
+  .then((articles) => {
+    response.status(200).send({  articles });
+  })
+  .catch((error) => {
+    next(error);
+  });
+    
+}
