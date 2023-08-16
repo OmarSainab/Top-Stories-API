@@ -68,3 +68,40 @@ exports.insertComment = ( author, article_id, body  ) => {
     return result.rows[0];
   });
 };
+
+exports.insertComment = ( author, article_id, body  ) => {
+  return db.query(
+    `INSERT INTO comments (body, article_id, author)
+    VALUES ($1, $2, $3) RETURNING *`,
+    [body, article_id, author]
+  )
+  .then((result) => {
+    return result.rows[0];
+  });
+};
+
+exports.updateArticle = (updVote, article_id  ) => {
+  return db.query(
+    `UPDATE articles
+    SET
+    votes = votes + $1 
+    WHERE article_id = $2
+    RETURNING *`,
+    [updVote, article_id]
+  )
+  .then((result) => {
+    return result.rows[0];
+  });
+};
+
+exports.removeCommentById = (comment_id) => { 
+
+  return db.query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *;`, [comment_id])
+  .then(({rows}) => {
+    if (rows.length === 0) {
+      return Promise.reject({status: 404, message: "comment does not exist"})
+    }
+  })
+
+  
+}

@@ -188,3 +188,65 @@ test('200: Comments should be served with the most recent comments first. ', () 
       });
   });
 });
+describe('PATCH /api/articles/:article_id', () => {
+  test('PATCH:201 updates an article by article_id - increments the current article\'s vote', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({ inc_votes: 10 })
+      .expect(201)
+      .then((response) => {
+        expect(response.body.article).toEqual(      {
+          article_id: 1,
+          title: 'Living in the shadow of a great man',
+          topic: 'mitch',
+          author: 'butter_bridge',
+          body: 'I find this existence challenging',
+          created_at: expect.any(String),
+          votes: 110,
+          article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+        }, );
+      });
+  });
+  test('PATCH:201 updates an article by article_id - decrements the current article\'s vote', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({ inc_votes: -30 })
+      .expect(201)
+      .then((response) => {
+        expect(response.body.article).toEqual(      {
+          article_id: 1,
+          title: 'Living in the shadow of a great man',
+          topic: 'mitch',
+          author: 'butter_bridge',
+          body: 'I find this existence challenging',
+          created_at: expect.any(String),
+          votes: 70,
+          article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+        }, );
+      });
+  });
+  test('PATCH:400 sends an appropriate error message when given an invalid vote value', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({ inc_votes: 'ten' })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe('Bad request');
+      });
+  });
+});
+
+describe('DELETE /api/comments/:comment_id', () => {
+  test('DELETE: 204 deletes the given comment by comment_id and sends no body back', ()=>{
+    return request(app).delete('/api/comments/1').expect(204);
+  });
+  test('DELETE: 404 responds with appropriate error message when given non-existent id', () => {
+    return request(app)
+    .delete('/api/comments/999')
+    .expect(404)
+    .then((response) => {
+      expect(response.body.message).toBe('comment does not exist')
+    })
+  })
+})
+
