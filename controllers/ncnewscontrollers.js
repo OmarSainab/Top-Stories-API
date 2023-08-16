@@ -44,7 +44,8 @@ exports.getAllComments = (request, response, next) => {
   .then((comments) => {
     response.status(200).send({  comments });
   })
-  .catch((error) => {
+  .catch((error) => { 
+    // console.log(error, "in controller")
     next(error);
   });
     

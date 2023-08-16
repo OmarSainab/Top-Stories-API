@@ -41,13 +41,15 @@ exports.selectArticleById = (article_id) => {
    });
   };
 
-  exports.selectAllComments = (article_id) => {
+  exports.selectAllComments = (id) => {
     const selectCommentsQuery = format(
       `SELECT * FROM comments WHERE article_id = %L
-      ORDER BY created_at`, article_id
+      ORDER BY created_at DESC;`, id
     );
-    return db.query(selectCommentsQuery).then((result) => {
-      return result.rows;
+    return db.query(selectCommentsQuery).then(({rows}) => { if (rows.length === 0) {
+      return Promise.reject({status: 404, message: 'article does not exist'})
+    }
+      return rows;
     });
   };
   

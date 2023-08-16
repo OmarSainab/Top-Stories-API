@@ -128,25 +128,30 @@ describe('/api/articles/:article_id/comments', () => {
         });
       });
   });
-  
-  // test('200: Comments should be served with the most recent comments first.', () => {
-  //   return request(app)
-  //     .get('/api/articles/1/comments')
-  //     .expect(200)
-  //     .then((response) => {
-  //       expect(response.body.comments[0]).toEqual({
-  //         comment_id: 15,
-  //         body: "I am 100% sure that we're not completely sure.",
-  //         article_id: 5,
-  //         author: 'butter_bridge',
-  //         created_at: "2020-11-24T00:08:00.000Z",
-  //         votes: 1
-  //       }
-  //       );
-  //     });
-  // })
+
+test('200: Comments should be served with the most recent comments first. ', () => {
+  return request(app)
+    .get('/api/articles/3/comments')
+    .expect(200)
+    .then((response) => {
+      expect(response.body.comments).toBeSortedBy("created_at", { descending: true });
+    });
+  });
+
+  test('GET:404 sends an appropriate error message when given a valid but non-existent id', () => {
+    return request(app)
+      .get('/api/articles/999/comments')
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toBe('article does not exist');
+      });
+  });
+  test('GET:400 sends an appropriate error message when given an invalid id', () => {
+    return request(app)
+      .get('/api/articles/banana/comments')
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe('Invalid id');
+      });
+  });
 });
-
-
-
-
