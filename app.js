@@ -25,10 +25,7 @@ app.get("/api/articles/:article_id/comments", getAllComments);
 
 app.post("/api/articles/:article_id/comments", postComment);
 
-app.patch("/api/articles/:article_id", patchArticle);
-
-app.delete('/api/comments/:comment_id', deleteCommentById);
-
+app.patch("/api/articles/:article_id", patchArticle);  
 
 app.use((request, response) => {
   response.status(404).send({ message: "Not Found" });
