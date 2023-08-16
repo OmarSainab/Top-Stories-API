@@ -58,32 +58,13 @@ exports.selectAllComments = (id) => {
   });
 };
 
-exports.insertCommentById = (body, id, author) => {
-  return db
-    .query(
-      `INSERT INTO comments (body, article_id, author)
-      VALUES ($1, $2, $3) RETURNING *`,
-      [body, id, author]
-    )
-    .then((result) => {
-      const output = result.rows;
-      return output[0];
-    });
-};
-
-exports.insertComment = ( author, article_id, body  ) => { 
-  console.log(author)
-  console.log(article_id)
-  console.log(body)
-
+exports.insertComment = ( author, article_id, body  ) => {
   return db.query(
     `INSERT INTO comments (body, article_id, author)
     VALUES ($1, $2, $3) RETURNING *`,
     [body, article_id, author]
   )
   .then((result) => {
-    console.log("hello in model")
-    console.log(result);
     return result.rows[0];
   });
 };

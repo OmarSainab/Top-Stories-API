@@ -58,11 +58,10 @@ exports.postComment = (request, response, next) => {
   
   const newComment = request.body;
   insertComment(newComment.username, article_id, newComment.body).then((comment) => {
-    console.log(comment, "in controller")
+   
     response.status(201).send({comment})
   })
   .catch((error) => {
-    console.log(error, "controller errror")
     next(error)
   })
 }
