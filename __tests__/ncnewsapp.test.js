@@ -188,5 +188,3 @@ test('200: Comments should be served with the most recent comments first. ', () 
       });
   });
 });
-
-
