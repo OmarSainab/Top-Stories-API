@@ -22,7 +22,8 @@ exports.selectArticleById = (article_id) => {
     });
 };
 
-exports.selectAllArticles = () => {
+exports.selectAllArticles = (topic) => {
+  const acceptedTopics = [topic]
   const selectArticlesQuery = format(
     `SELECT 
       articles.article_id,
@@ -35,11 +36,13 @@ exports.selectAllArticles = () => {
       COUNT(comments.comment_id) AS comment_count
       FROM articles
       JOIN comments ON articles.article_id = comments.article_id
+      WHERE articles.topic = %L
       GROUP BY articles.article_id
       ORDER BY created_at DESC;
-    `
+    `, topic
   );
   return db.query(selectArticlesQuery).then((result) => {
+    console.log(result.rows)
     return result.rows;
   });
 };

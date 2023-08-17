@@ -274,7 +274,7 @@ describe("/api/users", () => {
   });
 });
 // describe("FEATURE:/api/articles", () => {
-//   test("GET 200: Allows client to filter articles by topic", () => {
+//   test.only("GET 200: Allows client to filter articles by topic", () => {
 //     return request(app)
 //       .get("/api/articles?topic=coding")
 //       .expect(200)

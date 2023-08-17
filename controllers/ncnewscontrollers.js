@@ -6,7 +6,7 @@ const {
   insertComment,
   updateArticle,
   removeCommentById,
-  selectUsers
+  selectUsers,
 } = require("../models/ncnewsmodels");
 const endPoints = require("../endpoints.json");
 const { request } = require("../app");
@@ -37,11 +37,13 @@ exports.getArticlesById = (request, response, next) => {
 };
 
 exports.getAllArticles = (request, response, next) => {
-  selectAllArticles()
+  const { topic } = request.query;
+  selectAllArticles(topic)
     .then((articles) => {
       response.status(200).send({ articles });
     })
     .catch((error) => {
+      // console.log(error);
       next(error);
     });
 };
@@ -61,45 +63,45 @@ exports.postComment = (request, response, next) => {
   const article_id = request.params.article_id;
   const newComment = request.body;
 
-  insertComment(newComment.username, article_id, newComment.body).then((comment) => {
-   
-    response.status(201).send({comment})
-  })
-  .catch((error) => {
-    next(error)
-  })
-}
-
+  insertComment(newComment.username, article_id, newComment.body)
+    .then((comment) => {
+      response.status(201).send({ comment });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
 
 exports.patchArticle = (request, response, next) => {
-  const inc_votes = request.body.inc_votes
+  const inc_votes = request.body.inc_votes;
   const article_id = request.params.article_id;
 
-  updateArticle(inc_votes, article_id).then((article) => {
-    response.status(201).send({article})
-  })
-  .catch((error) => {
-    next(error)
-  })
-}
+  updateArticle(inc_votes, article_id)
+    .then((article) => {
+      response.status(201).send({ article });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
 
 exports.deleteCommentById = (request, response, next) => {
   const { comment_id } = request.params;
-  removeCommentById(comment_id).then(() => {
-  
-    response.status(204).send();
-  })
-  .catch((error) => {
-    next(error)
-  })
-}
+  removeCommentById(comment_id)
+    .then(() => {
+      response.status(204).send();
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
 
 exports.getUsers = (request, response, next) => {
   selectUsers()
-  .then((users) => {
-    response.status(200).send({users})
-  })
-  .catch((error) => {
-    next(error)
-  })
-}
+    .then((users) => {
+      response.status(200).send({ users });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
