@@ -2,8 +2,6 @@ const express = require("express");
 const app = express();
 const { getTopics, getEndpoints, getArticlesById, getAllArticles, getAllComments } = require("./controllers/ncnewscontrollers");
 
-app.use(express.json());
-
 app.get("/api/topics", getTopics);
 
 app.get("/api", getEndpoints);

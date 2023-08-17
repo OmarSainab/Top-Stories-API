@@ -117,6 +117,7 @@ describe('/api/articles/:article_id/comments', () => {
       .expect(200)
       .then((response) => {
         const { comments } = response.body;
+        expect(comments).toHaveLength(11)
         expect(Array.isArray(comments)).toBe(true);
         comments.forEach((comment) => {
           expect(comment).toHaveProperty('comment_id');
@@ -143,7 +144,7 @@ test('200: Comments should be served with the most recent comments first. ', () 
       .get('/api/articles/999/comments')
       .expect(404)
       .then((response) => {
-        expect(response.body.message).toBe('article does not exist');
+        expect(response.body.message).toBe('Not Found');
       });
   });
   test('GET:400 sends an appropriate error message when given an invalid id', () => {
@@ -152,6 +153,14 @@ test('200: Comments should be served with the most recent comments first. ', () 
       .expect(400)
       .then((response) => {
         expect(response.body.message).toBe('Invalid id');
+      });
+  });
+  test('GET:404 sends an appropriate error message when given a valid article ID but article has no comments ', () => {
+    return request(app)
+      .get('/api/articles/2/comments')
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toBe('Not Found');
       });
   });
 });

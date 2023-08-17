@@ -46,8 +46,9 @@ exports.selectArticleById = (article_id) => {
       `SELECT * FROM comments WHERE article_id = %L
       ORDER BY created_at DESC;`, id
     );
-    return db.query(selectCommentsQuery).then(({rows}) => { if (rows.length === 0) {
-      return Promise.reject({status: 404, message: 'article does not exist'})
+    return db.query(selectCommentsQuery).then(({rows}) => { 
+      if (rows.length === 0) {
+      return Promise.reject({status: 404, message: 'Not Found'})
     }
       return rows;
     });
