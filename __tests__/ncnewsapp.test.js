@@ -235,7 +235,7 @@ describe("PATCH /api/articles/:article_id", () => {
         });
       });
   });
-  test("PATCH:201 updates an article by article_id ignoring the invalid property", () => {
+  test("PATCH:200 updates an article by article_id ignoring the invalid property", () => {
     return request(app)
       .patch("/api/articles/1")
       .send({ inc_votes: -30, title: "title", topic: "topic" })
