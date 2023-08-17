@@ -5,7 +5,8 @@ const {
   selectAllComments,
   insertComment,
   updateArticle,
-  removeCommentById
+  removeCommentById,
+  selectUsers
 } = require("../models/ncnewsmodels");
 const endPoints = require("../endpoints.json");
 const { request } = require("../app");
@@ -92,3 +93,4 @@ exports.deleteCommentById = (request, response, next) => {
     next(error)
   })
 }
+

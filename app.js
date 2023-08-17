@@ -8,7 +8,8 @@ const {
   getAllComments,
   postComment,
   patchArticle,
-  deleteCommentById
+  deleteCommentById,
+  getUsers
 } = require("./controllers/ncnewscontrollers");
 
 app.use(express.json());
@@ -28,6 +29,7 @@ app.post("/api/articles/:article_id/comments", postComment);
 app.patch("/api/articles/:article_id", patchArticle);
 
 app.delete('/api/comments/:comment_id', deleteCommentById);  
+
 
 
 app.use((request, response) => {
