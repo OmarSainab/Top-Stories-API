@@ -48,7 +48,7 @@ exports.selectArticleById = (article_id) => {
     );
     return db.query(selectCommentsQuery).then(({rows}) => { 
       if (rows.length === 0) {
-      return Promise.reject({status: 200, message: 'article has no comments'})
+      return rows
     }
     
       return rows;
