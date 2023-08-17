@@ -260,3 +260,16 @@ describe("/api/comments/:comment_id", () => {
   });
 });
 
+describe("/api/users", () => {
+  test("GET 200: responds with an array of objects, each object should have the specified properties", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.users).toEqual(expect.any(Array));
+        expect(Object.keys(response.body.users[0])).toEqual(
+          expect.arrayContaining(["username", "name", "avatar_url"])
+        );
+      });
+  });
+});

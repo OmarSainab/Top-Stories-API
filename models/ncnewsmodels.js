@@ -112,3 +112,12 @@ exports.removeCommentById = (comment_id) => {
     });
 };
 
+exports.selectUsers = () => {
+  const selectUsersQuery = format(
+    `SELECT * FROM users;`
+  );
+  return db.query(selectUsersQuery)
+  .then(({rows}) => {
+    return rows
+  })
+}

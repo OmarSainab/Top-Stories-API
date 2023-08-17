@@ -30,6 +30,7 @@ app.patch("/api/articles/:article_id", patchArticle);
 
 app.delete('/api/comments/:comment_id', deleteCommentById);  
 
+app.get("/api/users", getUsers);
 
 
 app.use((request, response) => {
