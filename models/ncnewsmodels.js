@@ -15,7 +15,7 @@ exports.selectArticleById = (article_id) => {
       if (rows.length === 0) {
         return Promise.reject({
           status: 404,
-          message: "article does not exist",
+          message: "Not Found",
         });
       }
       return rows;
@@ -52,7 +52,7 @@ exports.selectAllComments = (id) => {
   );
   return db.query(selectCommentsQuery).then(({ rows }) => {
     if (rows.length === 0) {
-      return Promise.reject({ status: 404, message: "article does not exist" });
+      return Promise.reject({ status: 404, message: "Not Found" });
     }
     return rows;
   });
@@ -66,7 +66,7 @@ exports.insertComment = ( author, article_id, body  ) => {
   )
   .then((result) => {
     if (result.rows.length === 0) {
-      return Promise.reject({ status: 404, message: "article does not exist" });
+      return Promise.reject({ status: 404, message: "Not Found" });
     }
     return result.rows[0];
   });

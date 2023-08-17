@@ -37,8 +37,8 @@ app.use((error, request, response, next) => {
   }
 });
 app.use((error, request, response, next) => {
-  if(error.code === "23503" && error.detail.includes("Key (article_id)"))
-  response.status(404).send({ message: "article does not exist" });
+  if(error.code === "23503" && error.detail.includes("Key (article_id)") || error.detail.includes("Key (author)"))
+  response.status(404).send({ message: "Not Found" });
 else {
   next(error)
 }

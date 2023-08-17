@@ -68,7 +68,7 @@ describe('/api/articles/:article_id', () => {
       .get('/api/articles/999')
       .expect(404)
       .then((response) => {
-        expect(response.body.message).toBe('article does not exist');
+        expect(response.body.message).toBe('Not Found');
       });
   });
   test('GET:400 sends an appropriate error message when given an invalid id', () => {
@@ -143,23 +143,44 @@ test('200: Comments should be served with the most recent comments first. ', () 
       .get('/api/articles/999/comments')
       .expect(404)
       .then((response) => {
-        expect(response.body.message).toBe('article does not exist');
+        expect(response.body.message).toBe('Not Found');
       });
   });
   test('GET:400 sends an appropriate error message when given an invalid id', () => {
     return request(app)
-      .get('/api/articles/banana/comments')
+      .get('/api/articles/not-an-article/comments')
       .expect(400)
       .then((response) => {
         expect(response.body.message).toBe("Bad request");
       });
   });
 });
-  describe('POST /api/articles/:article_id/comments', () => {
+describe('POST /api/articles/:article_id/comments', () => {
   test('POST:201 inserts a new comment to the db and sends the new comment back to the client', () => {
     const newComment = {
       username: 'butter_bridge',
       body: 'This is amazing'
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        expect(response.body.comment).toEqual(   {
+          comment_id: 19,
+          body: 'This is amazing',
+          article_id: 1,
+          author: 'butter_bridge',
+          votes: 0,
+          created_at: expect.any(String)
+        } );
+      });
+  });
+  test('POST:201 inserts a new comment to the db and sends the new comment back ignoring the invalid property', () => {
+    const newComment = {
+      username: 'butter_bridge',
+      body: 'This is amazing',
+      fruit: 'apple'
     };
     return request(app)
       .post('/api/articles/1/comments')
@@ -197,7 +218,33 @@ test('200: Comments should be served with the most recent comments first. ', () 
       .send(newComment)
       .expect(404)
       .then((response) => {
-        expect(response.body.message).toBe('article does not exist');
+        expect(response.body.message).toBe('Not Found');
+      });
+  });
+  test('POST:400 sends an appropriate error message when article_id is not a number', () => {
+    const newComment = {
+      username: 'butter_bridge',
+      body: 'This is amazing'
+    };
+    return request(app)
+      .post('/api/articles/not-an-article/comments')
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe('Bad request');
+      });
+  });
+  test('POST:404 responds with an appropriate error message when username is not a registered user', () => {
+    const newComment = {
+      username: 'unregistered',
+      body: 'This is amazing'
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(newComment)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toBe('Not Found');
       });
   });
 });
