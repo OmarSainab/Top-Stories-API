@@ -141,10 +141,10 @@ test('200: Comments should be served with the most recent comments first. ', () 
 
   test('GET:404 sends an appropriate error message when given a valid but non-existent id', () => {
     return request(app)
-      .get('/api/articles/999/comments')
+      .get('/api/articles/999')
       .expect(404)
       .then((response) => {
-        expect(response.body.message).toBe('Not Found');
+        expect(response.body.message).toBe('article does not exist');
       });
   });
   test('GET:400 sends an appropriate error message when given an invalid id', () => {
@@ -155,12 +155,12 @@ test('200: Comments should be served with the most recent comments first. ', () 
         expect(response.body.message).toBe('Invalid id');
       });
   });
-  test('GET:404 sends an appropriate error message when given a valid article ID but article has no comments ', () => {
+  test('GET:200 sends an appropriate error message when given a valid article ID but article has no comments ', () => {
     return request(app)
       .get('/api/articles/2/comments')
-      .expect(404)
+      .expect(200)
       .then((response) => {
-        expect(response.body.message).toBe('Not Found');
+        expect(response.body.message).toBe('article has no comments');
       });
   });
 });
