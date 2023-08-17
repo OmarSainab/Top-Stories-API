@@ -273,16 +273,29 @@ describe("/api/users", () => {
       });
   });
 });
-// describe("FEATURE:/api/articles", () => {
-//   test.only("GET 200: Allows client to filter articles by topic", () => {
-//     return request(app)
-//       .get("/api/articles?topic=coding")
-//       .expect(200)
-//       .then((response) => {
-//         expect(response.body.articles[0]).toEqual({
-//           description: "Code is love, code is life",
-//           slug: "coding",
-//         });
-//       });
-//   });
-// });
+describe("FEATURE:/api/articles", () => {
+  test("GET 200: Allows client to filter articles by topic", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then((response) => {
+        const {articles} = response.body;
+        expect(articles.length).toBe(1);
+        articles.forEach((article) => {
+          expect(article.topic).toBe('cats')
+        }) 
+      });
+  });
+  test("GET 200: If the query is omitted, the endpoint should respond with all articles.", () => {
+    return request(app)
+      .get("/api/articles?topic")
+      .expect(200)
+      .then((response) => {
+        const {articles} = response.body;
+        expect(articles.length).toBe(5);
+        articles.forEach((article) => {
+          expect(article).toHaveProperty('topic')
+        }) 
+      });
+  });
+});
