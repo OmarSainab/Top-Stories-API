@@ -58,7 +58,7 @@ exports.postComment = (request, response, next) => {
   
   const newComment = request.body;
   insertComment(newComment.username, article_id, newComment.body).then((comment) => {
-   
+  
     response.status(201).send({comment})
   })
   .catch((error) => {

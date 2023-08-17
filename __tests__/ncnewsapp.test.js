@@ -187,4 +187,17 @@ test('200: Comments should be served with the most recent comments first. ', () 
         expect(response.body.message).toBe('Bad request');
       });
   });
+  test('POST:404 sends an appropriate error message when given a valid but non-existent id', () => {
+      const newComment = {
+        username: 'butter_bridge',
+        body: 'This is amazing'
+      };
+    return request(app)
+      .post('/api/articles/999/comments')
+      .send(newComment)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toBe('article does not exist');
+      });
+  });
 });
