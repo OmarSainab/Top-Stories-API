@@ -235,6 +235,25 @@ describe("PATCH /api/articles/:article_id", () => {
         });
       });
   });
+  test("PATCH:201 updates an article by article_id ignoring the invalid property", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: -30, title: "title", topic: "topic" })
+      .expect(201)
+      .then((response) => {
+        expect(response.body.article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: expect.any(String),
+          votes: 70,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        });
+      });
+  });
   test("PATCH:400 sends an appropriate error message when given an invalid vote value", () => {
     return request(app)
       .patch("/api/articles/1")
@@ -244,13 +263,31 @@ describe("PATCH /api/articles/:article_id", () => {
         expect(response.body.message).toBe("Bad request");
       });
   });
-  test('PATCH:404 sends an appropriate error message when given a valid but non-existent id', () => {
+  test("PATCH:404 sends an appropriate error message when given a valid but non-existent id", () => {
     return request(app)
-      .patch('/api/articles/999')
+      .patch("/api/articles/999")
       .send({ inc_votes: 10 })
       .expect(404)
       .then((response) => {
-        expect(response.body.message).toBe('article does not exist');
+        expect(response.body.message).toBe("article does not exist");
       });
-});
+  });
+  test("PATCH:400 sends an appropriate error message when given an invalid id", () => {
+    return request(app)
+      .patch("/api/articles/not-an-article")
+      .send({ inc_votes: 10 })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad request");
+      });
+  });
+  test("PATCH:400 sends an appropriate error message when given incorrect object key", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ donothing: 10 })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad request");
+      });
+  });
 });
