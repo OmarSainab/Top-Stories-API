@@ -149,7 +149,7 @@ describe("/api/articles/:article_id/comments", () => {
 
   test("GET:404 sends an appropriate error message when given a valid but non-existent id", () => {
     return request(app)
-      .get("/api/articles/999")
+      .get("/api/articles/999/comments")
       .expect(404)
       .then((response) => {
         expect(response.body.message).toBe("article does not exist");

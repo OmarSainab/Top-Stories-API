@@ -4,24 +4,27 @@ const db = require("../db/connection");
 exports.selectTopics = () => {
   const selectQuery = format(`SELECT * FROM topics;`);
   return db.query(selectQuery).then((result) => {
-    return result.rows
+    return result.rows;
   });
 };
 
 exports.selectArticleById = (article_id) => {
   return db
-    .query('SELECT * FROM articles WHERE article_id = $1;', [article_id])
-    .then(({rows}) => {
-      if (rows.length === 0){
-        return Promise.reject({status: 404, message: 'article does not exist'})
+    .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          message: "article does not exist",
+        });
       }
       return rows;
     });
-  };
+};
 
-  exports.selectAllArticles = () => {
-    const selectArticlesQuery = format(
-      `SELECT 
+exports.selectAllArticles = () => {
+  const selectArticlesQuery = format(
+    `SELECT 
       articles.article_id,
       articles.title,
       articles.topic,
@@ -34,26 +37,36 @@ exports.selectArticleById = (article_id) => {
       JOIN comments ON articles.article_id = comments.article_id
       GROUP BY articles.article_id
       ORDER BY created_at DESC;
-    `,
-    );
-    return db.query(selectArticlesQuery).then((result) => { 
-    return(result.rows)
-   });
-  };
+    `
+  );
+  return db.query(selectArticlesQuery).then((result) => {
+    return result.rows;
+  });
+};
 
-  exports.selectAllComments = (id) => {
-    const selectCommentsQuery = format(
-      `SELECT * FROM comments WHERE article_id = %L
-      ORDER BY created_at DESC;`, id
-    );
-    return db.query(selectCommentsQuery).then(({rows}) => { 
-      if (rows.length === 0) {
-      return rows
-    }
+exports.selectAllComments = (id) => {
+  const selectArticlesQuery = format(
+    `SELECT * FROM articles WHERE article_id = %L;`,
+    id
+  );
+  return db.query(selectArticlesQuery).then((result) => {
     
-      return rows;
-    });
-  };
-  
-
-
+    if (result.rows !== 0 && result.rows.length !== 0) {
+      const selectCommentsQuery = format(
+        `SELECT * FROM comments WHERE article_id = %L
+          ORDER BY created_at DESC;`,
+        id
+      );
+      return db.query(selectCommentsQuery).then((result) => {
+     
+        if (result.rows.length === 0) {
+          return result.rows;
+        } else {
+          return result.rows;
+        }
+      });
+    } else {
+      return Promise.reject({ status: 404, message: "article does not exist" });
+    }
+  });
+};

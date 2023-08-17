@@ -45,7 +45,6 @@ exports.getAllComments = (request, response, next) => {
     response.status(200).send({  comments });
   })
   .catch((error) => { 
-
     next(error);
   });
     
