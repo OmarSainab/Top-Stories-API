@@ -273,3 +273,16 @@ describe("/api/users", () => {
       });
   });
 });
+// describe("FEATURE:/api/articles", () => {
+//   test("GET 200: Allows client to filter articles by topic", () => {
+//     return request(app)
+//       .get("/api/articles?topic=coding")
+//       .expect(200)
+//       .then((response) => {
+//         expect(response.body.articles[0]).toEqual({
+//           description: "Code is love, code is life",
+//           slug: "coding",
+//         });
+//       });
+//   });
+// });
