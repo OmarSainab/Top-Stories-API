@@ -22,9 +22,9 @@ exports.selectArticleById = (article_id) => {
     });
 };
 
-exports.selectAllArticles = () => {
-  const selectArticlesQuery = format(
-    `SELECT 
+  exports.selectAllArticles = () => {
+    const selectArticlesQuery = format(
+      `SELECT 
       articles.article_id,
       articles.title,
       articles.topic,
@@ -37,12 +37,12 @@ exports.selectAllArticles = () => {
       JOIN comments ON articles.article_id = comments.article_id
       GROUP BY articles.article_id
       ORDER BY created_at DESC;
-    `
-  );
-  return db.query(selectArticlesQuery).then((result) => {
-    return result.rows;
-  });
-};
+    `,
+    );
+    return db.query(selectArticlesQuery).then((result) => { 
+    return(result.rows)
+   });
+  };
 
 exports.selectAllComments = (id) => {
   const selectArticlesQuery = format(
