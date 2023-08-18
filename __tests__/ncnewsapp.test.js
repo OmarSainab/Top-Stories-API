@@ -361,3 +361,16 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+describe("/api/comments/:comment_id", () => {
+  test("DELETE: 204 deletes the given comment by comment_id and sends no body back", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  test("DELETE: 404 responds with appropriate error message when given non-existent id", () => {
+    return request(app)
+      .delete("/api/comments/999")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toBe("comment does not exist");
+      });
+  });
+});
