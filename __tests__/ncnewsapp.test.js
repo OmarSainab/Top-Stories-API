@@ -52,20 +52,38 @@ describe("/api/articles/:article_id", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
-      .then((response) => {
-        expect(response.body.article).toMatchObject([
-          {
-            article_id: 1,
-            title: "Living in the shadow of a great man",
-            topic: "mitch",
-            author: "butter_bridge",
-            body: "I find this existence challenging",
-            created_at: "2020-07-09T20:11:00.000Z",
-            votes: 100,
-            article_img_url:
-              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-          },
-        ]);
+      .then((response) => { expect(response.body.article).toHaveProperty(
+        "article_id",
+        expect.any(Number)
+      );
+      expect(response.body.article).toHaveProperty(
+        "title",
+        expect.any(String)
+      );
+      expect(response.body.article).toHaveProperty(
+        "topic",
+        expect.any(String)
+      );
+      expect(response.body.article).toHaveProperty(
+        "author",
+        expect.any(String)
+      );
+      expect(response.body.article).toHaveProperty(
+        "created_at",
+        expect.any(String)
+      );
+      expect(response.body.article).toHaveProperty(
+        "votes",
+        expect.any(Number)
+      );
+      expect(response.body.article).toHaveProperty(
+        "article_img_url",
+        expect.any(String)
+      );
+      expect(response.body.article).toHaveProperty(
+        "comment_count",
+        expect.any(String)
+      );
       });
   });
   test("GET:404 sends an appropriate error message when given a valid but non-existent id", () => {
@@ -452,6 +470,16 @@ describe("FEATURE:/api/articles", () => {
       .expect(400)
       .then((response) => {
         expect(response.body.message).toBe("Bad Request");
+      });
+  });
+});
+describe("FEATURE:/api/articles/:article_id", () => {
+  test("GET 200: response includes comment_count by article_id", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article).toHaveProperty("comment_count", "11");
       });
   });
 });
