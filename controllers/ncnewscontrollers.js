@@ -1,4 +1,4 @@
-const { selectTopics, selectArticleById, selectAllArticles, selectAllComments, insertComment, updateArticle, removeCommentById } = require("../models/ncnewsmodels");
+const { selectTopics, selectArticleById, selectAllArticles, selectAllComments, insertComment, updateArticle, removeCommentById, selectUsers } = require("../models/ncnewsmodels");
 const endPoints = require("../endpoints.json")
 
 exports.getTopics = (request, response, next) => {
@@ -77,6 +77,15 @@ exports.deleteCommentById = (request, response, next) => {
   removeCommentById(comment_id).then(() => {
   
     response.status(204).send();
+  })
+  .catch((error) => {
+    next(error)
+  })
+}
+exports.getUsers = (request, response, next) => {
+  selectUsers()
+  .then((users) => {
+    response.status(200).send({users})
   })
   .catch((error) => {
     next(error)
