@@ -40,7 +40,7 @@ app.use((request, response) => {
 app.use((error, request, response, next) => {
   if (error.message && error.status) {
     response.status(error.status).send({ message: error.message });
-  } else if (error.code === "22P02" || error.code === "23502") {
+  } else if (error.code === "22P02" || error.code === "23502" || error.code === "42703" || error.code === "42601") {
     response.status(400).send({ message: "Bad Request" });
   } else {
     next(error);

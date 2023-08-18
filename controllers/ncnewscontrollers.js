@@ -27,15 +27,17 @@ exports.getArticlesById = (request, response, next) => {
 };
 
 exports.getAllArticles = (request, response, next) => {
+  const { topic } = request.query;
+  const { sort_by } = request.query || "created_at";
+  const { order } = request.query || "desc";
 
-  selectAllArticles()
-  .then((articles) => {
-    response.status(200).send({  articles });
-  })
-  .catch((error) => {
-    next(error);
-  });
-    
+  selectAllArticles(topic, sort_by, order)
+    .then((articles) => {
+      response.status(200).send({ articles });
+    })
+    .catch((error) => {
+      next(error);
+    });
 };
 
 exports.getAllComments = (request, response, next) => {
