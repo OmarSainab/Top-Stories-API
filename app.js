@@ -1,8 +1,6 @@
 const express = require("express");
 const app = express();
-const { getTopics, getEndpoints, getArticlesById, getAllArticles } = require("./controllers/ncnewscontrollers");
-
-app.use(express.json());
+const { getTopics, getEndpoints, getArticlesById, getAllArticles, getAllComments } = require("./controllers/ncnewscontrollers");
 
 app.get("/api/topics", getTopics);
 
@@ -10,8 +8,9 @@ app.get("/api", getEndpoints);
 
 app.get('/api/articles/:article_id', getArticlesById);
 
-
 app.get('/api/articles', getAllArticles)
+
+app.get('/api/articles/:article_id/comments', getAllComments)
 
 app.use((request, response) => {
     response.status(404).send({message: 'Not Found'})
