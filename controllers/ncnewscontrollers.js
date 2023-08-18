@@ -38,12 +38,14 @@ exports.getArticlesById = (request, response, next) => {
 
 exports.getAllArticles = (request, response, next) => {
   const { topic } = request.query;
-  selectAllArticles(topic)
+  const { sort_by } = request.query || "created_at";
+  const { order } = request.query || "desc";
+
+  selectAllArticles(topic, sort_by, order)
     .then((articles) => {
       response.status(200).send({ articles });
     })
     .catch((error) => {
-      console.log(error);
       next(error);
     });
 };

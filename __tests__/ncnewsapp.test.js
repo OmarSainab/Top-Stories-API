@@ -112,7 +112,8 @@ describe("/api/articles", () => {
       .then((response) => {
         expect(response.body.articles).toBeSortedBy("created_at", {
           descending: true,
-        });
+        }
+        );
       });
   });
 });
@@ -279,11 +280,11 @@ describe("FEATURE:/api/articles", () => {
       .get("/api/articles?topic=cats")
       .expect(200)
       .then((response) => {
-        const {articles} = response.body;
+        const { articles } = response.body;
         expect(articles.length).toBe(1);
         articles.forEach((article) => {
-          expect(article.topic).toBe('cats')
-        }) 
+          expect(article.topic).toBe("cats");
+        });
       });
   });
   test("GET 200: If the query is omitted, the endpoint should respond with all articles.", () => {
@@ -291,11 +292,54 @@ describe("FEATURE:/api/articles", () => {
       .get("/api/articles?topic")
       .expect(200)
       .then((response) => {
-        const {articles} = response.body;
+        const { articles } = response.body;
         expect(articles.length).toBe(5);
         articles.forEach((article) => {
-          expect(article).toHaveProperty('topic')
-        }) 
+          expect(article).toHaveProperty("topic");
+        });
+      });
+  });
+  test("GET 404: Returns an error message when passed an invalid topic query", () => {
+    return request(app)
+      .get("/api/articles?topic=invalid")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toBe("Not Found");
+      });
+  });
+  test("GET 200: Allows client to sort_by, which sorts the articles by any valid column (defaults to date)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles).toBeSortedBy("votes");
+      });
+  });
+  test("GET 400: Returns an error message when passed an invalid sort_by query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=invalid")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request");
+      });
+  });
+  test("GET 200: Allows client to order, which can be set to asc or desc for ascending or descending (defaults to descending)", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles).toBeSortedBy(
+          "created_at", {ascending: true}
+        )
+      });
+  });
+  test("GET 400: Returns an error message when passed an invalid order query", () => {
+    return request(app)
+      .get("/api/articles?order=invalid")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad request");
       });
   });
 });
+

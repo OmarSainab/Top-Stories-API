@@ -22,14 +22,23 @@ exports.selectArticleById = (article_id) => {
     });
 };
 
-exports.selectAllArticles = (topic) => {
- 
-   const acceptedOrdering = ["topic"]
+exports.selectAllArticles = (topic, sort_by, order) => {
+  const acceptedSortBy = [
+    "article_id",
+    "title",
+    "topic",
+    "author",
+    "created_at",
+    "votes",
+    "article_img_url",
+    "comment_count",
+  ];
 
-  //  if(!acceptedOrdering.includes(()))
+  if (sort_by && !acceptedSortBy.includes(sort_by)) {
+    return Promise.reject({ status: 400, message: "Bad Request" });
+  }
 
   const queryValues = [];
-
 
   let baseSQLString = `SELECT 
   articles.article_id,
@@ -42,18 +51,24 @@ exports.selectAllArticles = (topic) => {
   COUNT(comments.comment_id) AS comment_count
   FROM articles
   JOIN comments ON articles.article_id = comments.article_id
-`
-  if (topic){
-    baseSQLString += `WHERE topic = $1 GROUP BY articles.article_id`, queryValues.push(topic)
-  } else { baseSQLString += `GROUP BY articles.article_id ORDER BY created_at DESC`
-
+`;
+  if (topic) {
+    (baseSQLString += ` WHERE topic = $1   GROUP BY articles.article_id`),
+      queryValues.push(topic);
   }
-
-  console.log(queryValues)
-  // baseSQLString += `ORDER BY ${order_by} `
-  console.log(baseSQLString)
-  return db.query(baseSQLString,queryValues).then((result) => {
-    console.log(result.rows)
+  if (sort_by) {
+    baseSQLString += ` GROUP BY articles.article_id ORDER BY articles.${sort_by}`;
+  }
+  if (order) {
+    baseSQLString += ` GROUP BY articles.article_id ORDER BY articles.created_at ${order}`;
+  }
+  if (!sort_by && !order && !topic) {
+    baseSQLString += ` GROUP BY articles.article_id ORDER BY articles.created_at DESC`;
+  }
+  return db.query(baseSQLString, queryValues).then((result) => {
+    if (result.rows.length === 0) {
+      return Promise.reject({ status: 404, message: "Not Found" });
+    }
     return result.rows;
   });
 };
@@ -127,11 +142,8 @@ exports.removeCommentById = (comment_id) => {
 };
 
 exports.selectUsers = () => {
-  const selectUsersQuery = format(
-    `SELECT * FROM users;`
-  );
-  return db.query(selectUsersQuery)
-  .then(({rows}) => {
-    return rows
-  })
-}
+  const selectUsersQuery = format(`SELECT * FROM users;`);
+  return db.query(selectUsersQuery).then(({ rows }) => {
+    return rows;
+  });
+};
