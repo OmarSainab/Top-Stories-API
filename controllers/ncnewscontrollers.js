@@ -1,4 +1,4 @@
-const { selectTopics, selectArticleById, selectAllArticles, selectAllComments, insertComment,  } = require("../models/ncnewsmodels");
+const { selectTopics, selectArticleById, selectAllArticles, selectAllComments, insertComment, updateArticle } = require("../models/ncnewsmodels");
 const endPoints = require("../endpoints.json")
 
 exports.getTopics = (request, response, next) => {
@@ -56,6 +56,17 @@ exports.postComment = (request, response, next) => {
   insertComment(newComment.username, article_id, newComment.body).then((comment) => {
   
     response.status(201).send({comment})
+  })
+  .catch((error) => {
+    next(error)
+  })
+}
+exports.patchArticle = (request, response, next) => {
+  const inc_votes = request.body.inc_votes
+  const article_id = request.params.article_id;
+
+  updateArticle(inc_votes, article_id).then((article) => {
+    response.status(201).send({article})
   })
   .catch((error) => {
     next(error)
