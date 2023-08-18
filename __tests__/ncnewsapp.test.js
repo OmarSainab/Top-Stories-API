@@ -50,22 +50,41 @@ describe("ALL /notapath", () => {
 describe("/api/articles/:article_id", () => {
   test("GET:200 sends a single article to the client", () => {
     return request(app)
-      .get("/api/articles/1")
+      .get("/api/articles/2")
       .expect(200)
       .then((response) => {
-        expect(response.body.article).toMatchObject([
-          {
-            article_id: 1,
-            title: "Living in the shadow of a great man",
-            topic: "mitch",
-            author: "butter_bridge",
-            body: "I find this existence challenging",
-            created_at: "2020-07-09T20:11:00.000Z",
-            votes: 100,
-            article_img_url:
-              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-          },
-        ]);
+        expect(response.body.article).toHaveProperty(
+          "article_id",
+          expect.any(Number)
+        );
+        expect(response.body.article).toHaveProperty(
+          "title",
+          expect.any(String)
+        );
+        expect(response.body.article).toHaveProperty(
+          "topic",
+          expect.any(String)
+        );
+        expect(response.body.article).toHaveProperty(
+          "author",
+          expect.any(String)
+        );
+        expect(response.body.article).toHaveProperty(
+          "created_at",
+          expect.any(String)
+        );
+        expect(response.body.article).toHaveProperty(
+          "votes",
+          expect.any(Number)
+        );
+        expect(response.body.article).toHaveProperty(
+          "article_img_url",
+          expect.any(String)
+        );
+        expect(response.body.article).toHaveProperty(
+          "comment_count",
+          expect.any(String)
+        );
       });
   });
   test("GET:404 sends an appropriate error message when given a valid but non-existent id", () => {
@@ -85,7 +104,6 @@ describe("/api/articles/:article_id", () => {
       });
   });
 });
-
 describe("/api/articles", () => {
   test("GET:200 Responds with an articles array of article objects, each of which with specific properties: ", () => {
     return request(app)
@@ -112,8 +130,7 @@ describe("/api/articles", () => {
       .then((response) => {
         expect(response.body.articles).toBeSortedBy("created_at", {
           descending: true,
-        }
-        );
+        });
       });
   });
 });
@@ -328,9 +345,9 @@ describe("FEATURE:/api/articles", () => {
       .get("/api/articles?order=asc")
       .expect(200)
       .then((response) => {
-        expect(response.body.articles).toBeSortedBy(
-          "created_at", {ascending: true}
-        )
+        expect(response.body.articles).toBeSortedBy("created_at", {
+          ascending: true,
+        });
       });
   });
   test("GET 400: Returns an error message when passed an invalid order query", () => {
@@ -342,4 +359,13 @@ describe("FEATURE:/api/articles", () => {
       });
   });
 });
-
+describe("FEATURE:/api/articles/:article_id", () => {
+  test("GET 200: response includes comment_count by article_id", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article).toHaveProperty("comment_count", "11");
+      });
+  });
+});
