@@ -73,7 +73,7 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/999")
       .expect(404)
       .then((response) => {
-        expect(response.body.message).toBe("article does not exist");
+        expect(response.body.message).toBe("Not Found");
       });
   });
   test("GET:400 sends an appropriate error message when given an invalid id", () => {
@@ -81,7 +81,7 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/not-an-article")
       .expect(400)
       .then((response) => {
-        expect(response.body.message).toBe("Invalid id");
+        expect(response.body.message).toBe("Bad Request");
       });
   });
 });
@@ -152,7 +152,7 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/999/comments")
       .expect(404)
       .then((response) => {
-        expect(response.body.message).toBe("article does not exist");
+        expect(response.body.message).toBe("Not Found");
       });
   });
   test("GET:400 sends an appropriate error message when given an invalid id", () => {
@@ -160,7 +160,7 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/banana/comments")
       .expect(400)
       .then((response) => {
-        expect(response.body.message).toBe("Invalid id");
+        expect(response.body.message).toBe("Bad Request");
       });
   });
   test("GET:200 sends an appropriate message when given a valid article ID but article has no comments ", () => {
@@ -169,6 +169,100 @@ describe("/api/articles/:article_id/comments", () => {
       .expect(200)
       .then((response) => {
         expect(response.body.comments).toEqual([]);
+      });
+  });
+});
+
+describe('POST /api/articles/:article_id/comments', () => {
+  test('POST:201 inserts a new comment to the db and sends the new comment back to the client', () => {
+    const newComment = {
+      username: 'butter_bridge',
+      body: 'This is amazing'
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        expect(response.body.comment).toEqual(   {
+          comment_id: 19,
+          body: 'This is amazing',
+          article_id: 1,
+          author: 'butter_bridge',
+          votes: 0,
+          created_at: expect.any(String)
+        } );
+      });
+  });
+  test('POST:201 inserts a new comment to the db and sends the new comment back ignoring the invalid property', () => {
+    const newComment = {
+      username: 'butter_bridge',
+      body: 'This is amazing',
+      fruit: 'apple'
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        expect(response.body.comment).toEqual(   {
+          comment_id: 19,
+          body: 'This is amazing',
+          article_id: 1,
+          author: 'butter_bridge',
+          votes: 0,
+          created_at: expect.any(String)
+        } );
+      });
+  });
+  test('POST:400 responds with an appropriate error message when provided with a bad username (no name)', () => {
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send({
+        body: 'This is amazing'
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe('Bad Request');
+      });
+  });
+  test('POST:404 sends an appropriate error message when given a valid but non-existent id', () => {
+      const newComment = {
+        username: 'butter_bridge',
+        body: 'This is amazing'
+      };
+    return request(app)
+      .post('/api/articles/999/comments')
+      .send(newComment)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toBe('Not Found');
+      });
+  });
+  test('POST:400 sends an appropriate error message when article_id is not a number', () => {
+    const newComment = {
+      username: 'butter_bridge',
+      body: 'This is amazing'
+    };
+    return request(app)
+      .post('/api/articles/not-an-article/comments')
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe('Bad Request');
+      });
+  });
+  test('POST:404 responds with an appropriate error message when username is not a registered user', () => {
+    const newComment = {
+      username: 'unregistered',
+      body: 'This is amazing'
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(newComment)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toBe('Not Found');
       });
   });
 });

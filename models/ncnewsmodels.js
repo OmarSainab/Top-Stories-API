@@ -15,7 +15,7 @@ exports.selectArticleById = (article_id) => {
       if (rows.length === 0) {
         return Promise.reject({
           status: 404,
-          message: "article does not exist",
+          message: "Not Found",
         });
       }
       return rows;
@@ -66,7 +66,20 @@ exports.selectAllComments = (id) => {
         }
       });
     } else {
-      return Promise.reject({ status: 404, message: "article does not exist" });
+      return Promise.reject({ status: 404, message: "Not Found" });
     }
+  });
+};
+exports.insertComment = ( author, article_id, body  ) => {
+  return db.query(
+    `INSERT INTO comments (body, article_id, author)
+    VALUES ($1, $2, $3) RETURNING *`,
+    [body, article_id, author]
+  )
+  .then((result) => {
+    if (result.rows.length === 0) {
+      return Promise.reject({ status: 404, message: "Not Found" });
+    }
+    return result.rows[0];
   });
 };
