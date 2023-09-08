@@ -39,6 +39,7 @@ exports.selectArticleById = (article_id) => {
 };
 
 exports.selectAllArticles = (topic, sort_by, order) => {
+  console.log("in model")
   const acceptedSortBy = [
     "article_id",
     "title",
@@ -51,6 +52,7 @@ exports.selectAllArticles = (topic, sort_by, order) => {
   ];
 
   if (sort_by && !acceptedSortBy.includes(sort_by)) {
+    console.log("in rejector")
     return Promise.reject({ status: 400, message: "Bad Request" });
   }
 
@@ -72,16 +74,24 @@ exports.selectAllArticles = (topic, sort_by, order) => {
     (baseSQLString += ` WHERE topic = $1   GROUP BY articles.article_id`),
       queryValues.push(topic);
   }
-  if (sort_by) {
+  if (sort_by && sort_by !== "comment_count") {
     baseSQLString += ` GROUP BY articles.article_id ORDER BY articles.${sort_by}`;
   }
+
+  if (sort_by === "comment_count"){
+    baseSQLString += ` GROUP BY articles.article_id ORDER BY comment_count`
+  }
+
   if (order) {
     baseSQLString += ` GROUP BY articles.article_id ORDER BY articles.created_at ${order}`;
   }
   if (!sort_by && !order && !topic) {
     baseSQLString += ` GROUP BY articles.article_id ORDER BY articles.created_at DESC`;
   }
-  return db.query(baseSQLString, queryValues).then((result) => {
+  console.log(baseSQLString)
+
+  return db.query(
+    baseSQLString, queryValues).then((result) => {
     if (result.rows.length === 0) {
       return Promise.reject({ status: 404, message: "Not Found" });
     }
