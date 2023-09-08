@@ -39,7 +39,7 @@ exports.selectArticleById = (article_id) => {
 };
 
 exports.selectAllArticles = (topic, sort_by, order) => {
-  console.log("in model")
+
   const acceptedSortBy = [
     "article_id",
     "title",
@@ -52,7 +52,7 @@ exports.selectAllArticles = (topic, sort_by, order) => {
   ];
 
   if (sort_by && !acceptedSortBy.includes(sort_by)) {
-    console.log("in rejector")
+
     return Promise.reject({ status: 400, message: "Bad Request" });
   }
 
@@ -85,10 +85,36 @@ exports.selectAllArticles = (topic, sort_by, order) => {
   if (order) {
     baseSQLString += ` GROUP BY articles.article_id ORDER BY articles.created_at ${order}`;
   }
+
+  if (sort_by && order){
+    ` SELECT 
+    articles.article_id,
+    articles.title,
+    articles.topic,
+    articles.author,
+    articles.created_at,
+    articles.votes,
+    articles.article_img_url,
+    COUNT(comments.comment_id) AS comment_count
+FROM articles
+LEFT JOIN comments ON articles.article_id = comments.article_id
+WHERE topic = $1
+GROUP BY articles.article_id
+ORDER BY
+    CASE 
+        WHEN $2 = 'created_at' AND $3 = 'asc' THEN articles.created_at
+        WHEN $2 = 'created_at' AND $3 = 'desc' THEN articles.created_at DESC
+        WHEN $2 = 'votes' AND $3 = 'asc' THEN articles.votes
+        WHEN $2 = 'votes' AND $3 = 'desc' THEN articles.votes DESC
+        WHEN $2 = 'comments' AND $3 = 'asc' THEN comment_count
+        WHEN $2 = 'comments' AND $3 = 'desc' THEN comment_count DESC
+        ELSE articles.created_at DESC`
+  }
+
   if (!sort_by && !order && !topic) {
     baseSQLString += ` GROUP BY articles.article_id ORDER BY articles.created_at DESC`;
   }
-  console.log(baseSQLString)
+
 
   return db.query(
     baseSQLString, queryValues).then((result) => {
