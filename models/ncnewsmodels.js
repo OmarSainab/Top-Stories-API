@@ -64,6 +64,7 @@ exports.selectAllArticles = (topic, sort_by, order) => {
   articles.topic,
   articles.author,
   articles.created_at,
+  articles.body,
   articles.votes,
   articles.article_img_url,
   COUNT(comments.comment_id) AS comment_count
