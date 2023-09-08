@@ -86,29 +86,34 @@ exports.selectAllArticles = (topic, sort_by, order) => {
     baseSQLString += ` GROUP BY articles.article_id ORDER BY articles.created_at ${order}`;
   }
 
-  if (sort_by && order){
-    ` SELECT 
-    articles.article_id,
-    articles.title,
-    articles.topic,
-    articles.author,
-    articles.created_at,
-    articles.votes,
-    articles.article_img_url,
-    COUNT(comments.comment_id) AS comment_count
-FROM articles
-LEFT JOIN comments ON articles.article_id = comments.article_id
-WHERE topic = $1
-GROUP BY articles.article_id
-ORDER BY
-    CASE 
-        WHEN $2 = 'created_at' AND $3 = 'asc' THEN articles.created_at
-        WHEN $2 = 'created_at' AND $3 = 'desc' THEN articles.created_at DESC
-        WHEN $2 = 'votes' AND $3 = 'asc' THEN articles.votes
-        WHEN $2 = 'votes' AND $3 = 'desc' THEN articles.votes DESC
-        WHEN $2 = 'comments' AND $3 = 'asc' THEN comment_count
-        WHEN $2 = 'comments' AND $3 = 'desc' THEN comment_count DESC
-        ELSE articles.created_at DESC`
+  if (sort_by && order) {
+    baseSQLString = `
+      SELECT 
+      articles.article_id,
+      articles.title,
+      articles.topic,
+      articles.author,
+      articles.created_at,
+      articles.votes,
+      articles.article_img_url,
+      COUNT(comments.comment_id) AS comment_count
+      FROM articles
+      LEFT JOIN comments ON articles.article_id = comments.article_id
+      WHERE topic = $1
+      GROUP BY articles.article_id
+      ORDER BY
+      `;
+    
+    if (sort_by === 'created_at') {
+      baseSQLString += `articles.created_at ${order === 'asc' ? 'ASC' : 'DESC'}`;
+    } else if (sort_by === 'votes') {
+      baseSQLString += `articles.votes ${order === 'asc' ? 'ASC' : 'DESC'}`;
+    } else if (sort_by === 'comments') {
+      baseSQLString += `comment_count ${order === 'asc' ? 'ASC' : 'DESC'}`;
+    } else {
+  
+      baseSQLString += 'articles.created_at DESC';
+    }
   }
 
   if (!sort_by && !order && !topic) {
