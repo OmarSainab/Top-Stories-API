@@ -52,7 +52,7 @@ The RESTful API:
 
 5. **Run Tests**
 
-    - Run the following command to test the functionality of endpoints
+    - Run the following command to test the functionality of endpoints:
     ```
     npm test
     ```
