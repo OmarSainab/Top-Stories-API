@@ -1,13 +1,60 @@
-# Northcoders News API
+# Top Stories (Northcoders) API 
 
-The rendered API is available on: https://topstories.onrender.com/api
+**This Git repository stores the back-end of a news website**
 
-A developer must add .env.tets and .env.development files in order to successfully connect the the test and development databases locally. In each there is a PGDATABASE=databasename for that environment (the database names are also in /db/setup.sql). These .env files are .gitignored to secure the data.
+### The hosted API is available on: https://topstories.onrender.com/api
 
-To create the environment variables in order to clone this project and run it locally:
+### Project summary
 
-1. For development settings, create a file named .env.development.
-2. For testing settings, create a file named .env.test.
-3. In each file add the environment variable specifying the PostgreSQL database.
-4. gitignore the .env .files by adding to .gitignore`node_modules
-.env.*` .
+The RESTful API:
+
+- Effectively handles queries from an SQL database.
+- Implements a Test-Driven Development (TDD) approach and MVC architecture.
+- Offers a number of endpoints for CRUD operations.
+
+### Tech stack and versions
+
+- Node.js: v20.2.0
+- Express.js
+- PostgreSQL (PSQL): v14.7
+- node-postgres library to interface with PostgreSQL
+- Git version control
+
+### Instructions
+
+1. **Fork and clone:**
+    - Click Fork in the top right of the this repo page.
+    - Navigate to the folder you want this repo to be in locally via the command line. Hit:
+      ```
+      git clone <name-of-repo>
+      ```
+
+2. **Install dependencies**
+    -  to install the dependencies 
+        ```
+        npm install
+        ```
+
+3. **Set-up local database**
+     - Navigate to `package.json` for available scripts.
+    - Create your own `.env.test` and `.env.developement` files using `env-example` as a template. 
+   - Into each, add PGDATABASE=, with the correct database name for that environment (see /db/setup.sql for the database names).
+
+4. **Seed the Databases:** 
+
+    - Enter the following in the command line:
+    ```
+    npm run setup-dbs
+    ```
+    ```
+    npm run seed
+    ```
+
+5. **Run Tests**
+
+    - Run the following command to test the functionality of endpoints
+    ```
+    npm test
+    ```
+
+

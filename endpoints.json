@@ -9,49 +9,122 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
-  "GET /api/articles": {
-    "description": "serves an array of all articles",
-    "queries": ["author", "topic", "sort_by", "order"],
-    "exampleResponse": {
-      "articles": [
-        {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": "2018-05-30T15:59:13.341Z",
-          "votes": 0,
-          "comment_count": 6
-        }
-      ]
-    }
-  },
-  "GET /api/comments": {
-    "description": "serves an array of all comments",
-    "queries": ["comments", "votes", "sort_by", "order"],
-    "exampleResponse": {
-      "comments": [
-        {
-          "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-          "votes": 16,
-          "author": "butter_bridge",
-          "article_id": 9,
-          "created_at": 1586179020000
-        }
-      ]
-    }
-  },
   "GET /api/users": {
     "description": "serves an array of all users",
-    "queries": ["username", "name"],
+    "queries": [],
     "exampleResponse": {
-      "users": [
+      "topics": [
         {
           "username": "butter_bridge",
           "name": "jonny",
           "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        },
+        {
+          "username": "icellusedkars",
+          "name": "sam",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+        },
+        {
+          "username": "rogersop",
+          "name": "paul",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4"
+        },
+        {
+          "username": "lurker",
+          "name": "do_nothing",
+          "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
         }
       ]
     }
+  },
+  "GET /api/articles": {
+    "description": "serves an array of all articles",
+    "queries": ["topic", "sort_by", "order"],
+    "exampleResponse": {
+      "articles": {
+        "title": "Running a Node App",
+        "topic": "coding",
+        "author": "jessjelly",
+        "body": "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
+        "created_at": 1604728980000,
+        "votes": 0,
+        "article_img_url": "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700"
+      }
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an object of a specific article by its article_id",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 6,
+        "title": "JavaScript’s Apply, Call, and Bind Methods are Essential for JavaScript Professionals",
+        "topic": "coding",
+        "author": "grumpy19",
+        "body": "Functions are objects in JavaScript, as you should know by now, if you have read any of the prerequisite articles. And as objects, functions have methods, including the powerful Apply, Call, and Bind methods. On the one hand, Apply and Call are nearly identical and are frequently used in JavaScript for borrowing methods and for setting the this value explicitly. We also use Apply for variable-arity functions; you will learn more about this in a bit.",
+        "created_at": "2020-11-11T15:09:00.000Z",
+        "votes": 0,
+        "article_img_url": "https://images.pexels.com/photos/4383298/pexels-photo-4383298.jpeg?w=700&h=700"
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments for the given article_id",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 14,
+          "body": "What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.",
+          "article_id": 5,
+          "author": "icellusedkars",
+          "votes": 16,
+          "created_at": "2020-06-09T05:00:00.000Z"
+        },
+        {
+          "comment_id": 15,
+          "body": "I am 100% sure that we're not completely sure.",
+          "article_id": 5,
+          "author": "butter_bridge",
+          "votes": 1,
+          "created_at": "2020-11-24T00:08:00.000Z"
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "adds a comment to a article of a given Id",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 19,
+        "body": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "article_id": 6,
+        "author": "butter_bridge",
+        "votes": 0,
+        "created_at": "2023-08-17T13:34:24.362Z"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "updates an article of its given Id",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 104,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "delete the given comment by comment_id",
+    "queries": [],
+    "exampleResponse": {}
   }
 }
