@@ -1,6 +1,6 @@
 # Top Stories (Northcoders) API 
 
-**This Git repository stores the back-end of a news website**
+**This Git repository stores the back-end of a news website.**
 
 ### The hosted API is available on: https://topstories.onrender.com/api
 
