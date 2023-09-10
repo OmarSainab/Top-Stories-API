@@ -30,7 +30,7 @@ The RESTful API:
       ```
 
 2. **Install dependencies**
-    -  To install the dependencies 
+    -  To install the dependencies enter in the command line: 
         ```
         npm install
         ```
