@@ -22,15 +22,15 @@ The RESTful API:
 
 ### Instructions
 
-1. **Fork and clone:**
+1. **Fork and clone**
     - Click Fork in the top right of the this repo page.
-    - Navigate to the folder you want this repo to be in locally via the command line. Hit:
+    - Navigate to the folder you want this repo to be in locally, enter in the command line:
       ```
       git clone <name-of-repo>
       ```
 
 2. **Install dependencies**
-    -  to install the dependencies 
+    -  To install the dependencies 
         ```
         npm install
         ```
@@ -40,7 +40,7 @@ The RESTful API:
     - Create your own `.env.test` and `.env.developement` files using `env-example` as a template. 
    - Into each, add PGDATABASE=, with the correct database name for that environment (see /db/setup.sql for the database names).
 
-4. **Seed the Databases:** 
+4. **Seed the Databases** 
 
     - Enter the following in the command line:
     ```
